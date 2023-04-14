@@ -1,15 +1,6 @@
-from datetime import timedelta
 from django.shortcuts import render, get_object_or_404
-from django.utils import timezone
 from datacenter.models import Passcard, Visit
-from datacenter.storage_information_view import get_duration, format_duration
-
-LONG_VISIT_MINUTES = 60
-
-
-def is_visit_long(visit, minutes=LONG_VISIT_MINUTES):
-    duration = get_duration(visit)
-    return duration > timedelta(minutes=minutes)
+from visit_duration import get_duration, is_visit_long
 
 
 def passcard_info_view(request, passcode):

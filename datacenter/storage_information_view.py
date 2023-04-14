@@ -1,22 +1,7 @@
 from django.shortcuts import render
 from datacenter.models import Visit
 import django.utils.timezone
-
-
-def get_duration(visit):
-    entered_at = visit.entered_at
-    now = django.utils.timezone.now()
-    if visit.leaved_at:
-        now = visit.leaved_at
-    duration = now - entered_at
-    return duration
-
-
-def format_duration(duration):
-    hours = duration.seconds // 3600
-    minutes = (duration.seconds % 3600) // 60
-    seconds = duration.seconds % 60
-    return f'{hours:02d}:{minutes:02d}'
+from visit_duration import format_duration, get_duration, is_visit_long
 
 
 def storage_information_view(request):
@@ -28,11 +13,13 @@ def storage_information_view(request):
         who_entered = owner_name.owner_name
         entered_at = django.utils.timezone.localtime(active_visit.entered_at)
         duration = format_duration(get_duration(active_visit))
+        is_strange = is_visit_long(active_visit)
 
         non_closed_visits.append({
             'who_entered': who_entered,
             'entered_at': entered_at,
             'duration': duration,
+            'is_strange': is_strange
         })
 
     if not non_closed_visits:
